@@ -1,0 +1,17 @@
+#! /bin/bash
+
+echo "Enter API Key: "
+read api
+
+echo "Domain: "
+read domain
+
+echo "\nMX: " && curl "https://api.elasticemail.com/v2/domain/verifymx?apikey=$api&domain=$domain"
+
+echo "\n\nDKIM:" && curl "https://api.elasticemail.com/v2/domain/verifydkim?apikey=$api&domain=$domain"
+
+echo "\n\nDMARC:" && curl "https://api.elasticemail.com/v2/domain/verifydmarc?apikey=$api&domain=$domain"
+
+echo "\n\nSPF:" && curl "https://api.elasticemail.com/v2/domain/verifyspf?apikey=$api&domain=$domain"
+
+echo "\n"

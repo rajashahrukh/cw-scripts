@@ -1,0 +1,12 @@
+#! /bin/bash
+
+echo "Enter API Key: "
+read api
+
+echo "Domain: "
+read domain
+
+curl "https://api.elasticemail.com/v2/domain/verifymx?apikey="&domain=rajashahrukh.tk"
+curl "https://api.elasticemail.com/v2/domain/verifydkim?apikey=fe08ae09-8d39-4aab-9d9e-bd9627e752b1&domain=rajashahrukh.tk"
+curl "https://api.elasticemail.com/v2/domain/verifydmarc?apikey=fe08ae09-8d39-4aab-9d9e-bd9627e752b1&domain=rajashahrukh.tk"
+curl "https://api.elasticemail.com/v2/domain/verifyspf?apikey=fe08ae09-8d39-4aab-9d9e-bd9627e752b1&domain=rajashahrukh.tk"
