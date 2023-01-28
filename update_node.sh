@@ -1,3 +1,5 @@
+#!/bin/bash
+
 VERSION=$1
 cd /var/cw/systeam
 wget -1 https://nodejs.org/download/release/v$VERSION/node-v$VERSION-linux-x64.tar.gz
