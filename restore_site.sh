@@ -1,13 +1,19 @@
 #!/bin/bash
 
+#Declaring variables
+
 source_app=$1
 dest_app=$2
 restore_point=$3
 dest_app_db_pw=$(cd /home/master/applications/$dest_app/public_html/ && /usr/local/bin/wp config get DB_PASSWORD --allow-root)
 
+#Fetching backup via Duplicity
+
 echo -e "Fetching Backup...\n\n"
 
 /var/cw/scripts/bash/duplicity_restore.sh --src $source_app -r --dst '/home/master/applications/'$dest_app'/tmp' --time "$restore_point"
+
+#Checks if backup already exists if not then removes destination files from public_html
 
 echo -e "Removing contents of Destination app...\n\n"
 
@@ -15,9 +21,10 @@ if [ -e /home/master/applications/$dest_app/tmp/public_html/wp-config.php ]
 then
     rm -rf /home/master/applications/$dest_app/public_html/*
 else
-    echo "Backup Failed"
-	break;
+    echo "Backup already exists!"
 fi
+
+#Copies backup data to destination
 
 echo -e "Copying data...\n\n"
 
