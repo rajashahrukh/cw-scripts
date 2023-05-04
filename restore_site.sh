@@ -2,42 +2,73 @@
 
 #Declaring variables
 
-source_app=$1
-dest_app=$2
-restore_point=$3
-dest_app_db_pw=$(cd /home/master/applications/$dest_app/public_html/ && /usr/local/bin/wp config get DB_PASSWORD --allow-root)
+SOURCE_APP=$1
+DEST_APP=$2
+RESTORE_POINT=$3
 
-#Fetching backup via Duplicity
+#if /usr/local/bin/wp cli version --allow-root > /dev/null 2>&1;
+#then
 
-echo -e "Fetching Backup...\n\n"
-
-/var/cw/scripts/bash/duplicity_restore.sh --src $source_app -r --dst '/home/master/applications/'$dest_app'/tmp' --time "$restore_point"
-
-#Checks if backup already exists if not then removes destination files from public_html
-
-echo -e "Removing contents of Destination app...\n\n"
-
-if [ -e /home/master/applications/$dest_app/tmp/public_html/wp-config.php ]
-then
-    rm -rf /home/master/applications/$dest_app/public_html/*
+if [[ -z $1 || -z $2 || -z $3 ]]; then
+    echo -e "Missing arguments"
+    exit
 else
-    echo "Backup already exists!"
+    if /usr/local/bin/wp cli version --allow-root >/dev/null 2>&1; then
+
+        #Fetching backup via Duplicity
+
+        echo -e "Fetching Backup...\n\n"
+
+        #Checks if backup already exists if not then removes destination files from public_html
+
+        if [ -e /home/master/applications/$DEST_APP/tmp/public_html/wp-config.php ]; then
+
+            echo "Backup already exists!"
+        else
+            DEST_APP_DB_PW=$(cd /home/master/applications/$DEST_APP/public_html/ && /usr/local/bin/wp config get DB_PASSWORD --allow-root)
+
+            /var/cw/scripts/bash/duplicity_restore.sh --src $SOURCE_APP -r --dst '/home/master/applications/'$DEST_APP'/tmp' --time "$RESTORE_POINT"
+
+            echo -e "Removing contents of Destination app...\n\n"
+
+            echo -e "Removing database...\n\n"
+            cd /home/master/applications/$DEST_APP/public_html/ && /usr/local/bin/wp db reset --allow-root
+
+            echo -e "Removing files...\n\n"
+            rm -rf /home/master/applications/$DEST_APP/public_html/*
+
+            #Copies backup data to destination
+
+            echo -e "Copying data...\n\n"
+
+            rsync -avuz -q /home/master/applications/$DEST_APP/tmp/public_html/. /home/master/applications/$DEST_APP/public_html/
+
+            cd /home/master/applications/$DEST_APP/public_html/ && /usr/local/bin/wp config set DB_NAME $DEST_APP --allow-root && /usr/local/bin/wp config set DB_USER $DEST_APP --allow-root && /usr/local/bin/wp config set DB_PASSWORD $DEST_APP_DB_PW --allow-root
+
+            echo -e "Importing Database...\n\n"
+
+            mysql $DEST_APP </home/master/applications/$DEST_APP/tmp/mysql/$SOURCE_APP*.sql
+
+            echo -e "Flushing Cache"
+
+            #    service varnish restart
+            /usr/local/bin/wp cache flush --allow-root
+            echo -e "Import Successful"
+
+            echo -e "Successful"
+
+            #Removing backup files in tmp directory
+
+            echo -e "Removing Backup files in tmp directory"
+            rm -rf /home/master/applications/$DEST_APP/tmp/mysql /home/master/applications/$DEST_APP/tmp/public_html /home/master/applications/$DEST_APP/tmp/private_html
+            echo -e "Removed"
+
+        fi
+
+    else
+
+        echo -e "WP CLI is not working!"
+
+    fi
+
 fi
-
-#Copies backup data to destination
-
-echo -e "Copying data...\n\n"
-
-rsync -avuz -q /home/master/applications/$dest_app/tmp/public_html/. /home/master/applications/$dest_app/public_html/
-
-cd /home/master/applications/$dest_app/public_html/ && /usr/local/bin/wp config set DB_NAME $dest_app --allow-root && /usr/local/bin/wp config set DB_USER $dest_app --allow-root && /usr/local/bin/wp config set DB_PASSWORD $dest_app_db_pw --allow-root
-
-echo -e "Importing Database...\n\n"
-
-cd /home/master/applications/$dest_app/public_html/ && /usr/local/bin/wp db reset --yes --allow-root
-
-mysql $dest_app < /home/master/applications/$dest_app/tmp/mysql/*sql
-
-echo -e "Import Successful"
-
-echo -e "Successful"
