@@ -6,14 +6,11 @@ SOURCE_APP=$1
 DEST_APP=$2
 RESTORE_POINT=$3
 
-#if /usr/local/bin/wp cli version --allow-root > /dev/null 2>&1;
-#then
-
 if [[ -z $1 || -z $2 || -z $3 ]]; then
     echo -e "Missing arguments"
     exit
 else
-    if /usr/local/bin/wp cli version --allow-root >/dev/null 2>&1; then
+    if cd /home/master/applications/$DEST_APP/public_html/ && /usr/local/bin/wp core is-installed --allow-root >/dev/null 2>&1; then
 
         #Fetching backup via Duplicity
 
@@ -67,7 +64,7 @@ else
 
     else
 
-        echo -e "WP CLI is not working!"
+        echo -e "This is not a WordPress application or WP CLI is not working!"
 
     fi
 
