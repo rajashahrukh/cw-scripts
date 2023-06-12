@@ -18,6 +18,9 @@ echo -e "${COLOR} $2"
 
 }
 
+#Add a code for confirmation before executing script
+#Do not forget to add --allow-root --skip-plugins --skip-themes tag in WP commands
+
 if [[ -z $1 || -z $2 || -z $3 ]]; then
     echo -e "Missing arguments"
     exit
