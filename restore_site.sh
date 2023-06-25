@@ -2,6 +2,9 @@
 
 #Declaring variables
 
+#Types of flags to check if a file exists:
+#https://linuxize.com/post/bash-check-if-file-exists/
+
 SOURCE_APP=$1
 DEST_APP=$2
 RESTORE_POINT=$3
@@ -33,6 +36,8 @@ else
 
         #Checks if backup already exists if not then removes destination files from public_html
 
+
+ 	#Try the below condition with a ! to reverse it
         if [ -e /home/master/applications/$DEST_APP/tmp/public_html/wp-config.php ]; then
 
             print_color "INFO" "Backup already exists!"
