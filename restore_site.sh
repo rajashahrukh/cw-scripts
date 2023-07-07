@@ -97,6 +97,10 @@ else
             rm -rf /home/master/applications/$DEST_APP/tmp/mysql /home/master/applications/$DEST_APP/tmp/public_html /home/master/applications/$DEST_APP/tmp/private_html
             echo -e "INFO: Removed"
 
+            #Correct files and folders permission:
+            #find . -type d -exec chmod 755 {} \; 
+            #find . -type f -exec chmod 644 {} \;
+
             print_color "Success" "Backup has been restored to $DEST_APP"
 
         fi
