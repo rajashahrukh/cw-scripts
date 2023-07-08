@@ -15,8 +15,6 @@
 #      REVISION:  ---								#
 #===============================================================================#
 
-
-
 SOURCE_APP=$1
 DEST_APP=$2
 RESTORE_POINT=$3
@@ -37,15 +35,36 @@ esac
 	echo -e "${COLOR} $2"
 }
 
+usage(){
+    cat >&2 <<EOF
+
+    Usage:
+
+    ./restore_site.sh source_app_db dest_app_db restore_date
+
+EOF
+}
+
 if [[ -z $1 || -z $2 || -z $3 ]]; then
     echo -e "Missing arguments"
+	usage
     exit
 elif [ $# -eq 0 ]; then
     echo -e "No arguments provided"
+	usage
     exit
 elif [ $# -gt 3 ]; then
     echo -e "Too many arguments!"
+	usage
     exit
+fi
+
+if [[ ! -e $APPDIR/$SOURCE_APP ]]; then
+print_color "Error" "Source application $SOURCE_APP does not exist."
+exit
+elif [[ ! -e $APPDIR/$DEST_APP ]]; then
+print_color "Error" "Destination application $DEST_APP does not exist."
+exit
 fi
 
 read -p "Are you sure you would like to proceed with the restore? " -n 1 -r
@@ -56,11 +75,18 @@ then
     exit 0
 fi
 
-if cd $APPDIR/$DEST_APP/public_html/ && wp core is-installed >/dev/null 2>&1; then
+if ! cd $APPDIR/$DEST_APP/public_html/ && wp core is-installed >/dev/null 2>&1; then
+	print_color "Error" "This is not a WordPress application or WP CLI is not working!"
+	exit 0
+fi
 
-if [[ ! -e $APPDIR/$SOURCE_APP/tmp/public_html && ! -e $APPDIR/$SOURCE_APP/tmp/private_html && ! -e $APPDIR/$SOURCE_APP/tmp/mysql ]]; then
+if [[ -e $APPDIR/$SOURCE_APP/tmp/public_html || -e $APPDIR/$SOURCE_APP/tmp/private_html || -e $APPDIR/$SOURCE_APP/tmp/mysql ]]; then
+            print_color "INFO" "Backup already exists!"
+	    exit 0
+fi
 
 print_color "INFO" "Fetching Backup..."
+
 if /var/cw/scripts/bash/duplicity_restore.sh --src $SOURCE_APP -r --dst "$APPDIR/$SOURCE_APP/tmp" --time "$RESTORE_POINT"; then
 
 	    DEST_APP_DB_PW=$(cd $APPDIR/$DEST_APP/public_html/ && wp config get DB_PASSWORD)
@@ -95,8 +121,8 @@ if /var/cw/scripts/bash/duplicity_restore.sh --src $SOURCE_APP -r --dst "$APPDIR
 	    #Write code for WordPress permissions and ownership here
 
 	    print_color "INFO" "Fixing .user.ini file"
-	    if [[ -e $APPDIR/$DESTAPP/public_html/.user.ini ]]; then
-	    sed -i 's/kkezrnyuca/efdypmgcmf/g' $APPDIR/$DESTAPP/public_html/.user.ini
+	    if [[ -e $APPDIR/$DEST_APP/public_html/.user.ini ]]; then
+	    sed -i 's/kkezrnyuca/efdypmgcmf/g' $APPDIR/$DEST_APP/public_html/.user.ini
 	    print_color "Success" ".user.ini fixed"
 	    else
 	    print_color "INFO" "user.ini does not exist."
@@ -129,16 +155,12 @@ if /var/cw/scripts/bash/duplicity_restore.sh --src $SOURCE_APP -r --dst "$APPDIR
             #Correct files and folders permission:
             #find . -type d -exec chmod 755 {} \; 
             #find . -type f -exec chmod 644 {} \;
+	    print_color "INFO" "Fixing permissions"
+	    chown -R $DEST_APP:www-data $APPDIR/$DEST_APP/public_html
+	    find $APPDIR/$DEST_APP/public_html/ -type d -not -perm 775 -print0 | xargs -0 -P 20 chmod 775 2> /dev/null
+	    find $APPDIR/$DEST_APP/public_html/ -type f -not -perm 664 -print0 | xargs -0 -P 20 chmod 664 2> /dev/null
 
             print_color "Success" "Backup has been restored to $DEST_APP"
 else
 	    print_color "Error" "Could not fetch backup"
-fi
-
-else
-	    print_color "INFO" "Backup already exists!"
-fi
-
-else
-	    print_color "Error" "This is not a WordPress application or WP CLI is not working!"
 fi
