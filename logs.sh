@@ -14,7 +14,7 @@ df -h > /var/cw/systeam/logs/disk-usage.txt
 df -i > /var/cw/systeam/logs/inodes-usage.txt
 
 #du output
-du -hd3 *  --total --exclude='proc' --exclude='sys' --exclude='var/ossec' --exclude='usr/share' --exclude='boot' --exclude='dev' --exclude='run' --exclude='/var/spool' --exclude='etc' --exclude='bin' --exclude='usr/lib/locale' > /var/cw/systeam/logs/du-output.txt
+du -hd3 /  --total --exclude='proc' --exclude='sys' --exclude='var/ossec' --exclude='usr/share' --exclude='boot' --exclude='dev' --exclude='run' --exclude='/var/spool' --exclude='etc' --exclude='bin' --exclude='usr/lib/locale' > /var/cw/systeam/logs/du-output.txt
 
 #Recent 100 lines of Nginx logs
 tail -100 /home/master/applications/$1/logs/nginx*.cloudwaysapps.com.access.log > /var/cw/systeam/logs/nginx-$1.access.log
