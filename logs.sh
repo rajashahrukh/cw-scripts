@@ -36,3 +36,21 @@ apm -s $1 traffic -l1h --json > /var/cw/systeam/logs/apm-traffic.txt
 
 #APM MySQL output
 apm -s $1 mysql -l1h --json > /var/cw/systeam/logs/apm-mysql.txt
+
+#Elastic Search Status
+service elasticsearch status > /var/cw/systeam/logs/elastic-search-status.txt
+
+#Nginx Status
+service nginx status > /var/cw/systeam/logs/nginx-status.txt
+
+#Apache Status
+service apache2 status > /var/cw/systeam/logs/apache-status.txt
+
+#Varnish Status
+service varnish status > /var/cw/systeam/logs/varnish-status.txt
+
+#MySQL Status
+service mysql status > /var/cw/systeam/logs/mysql-status.txt
+
+#Redis Status
+service redis-server status > /var/cw/systeam/logs/redis-status.txt
