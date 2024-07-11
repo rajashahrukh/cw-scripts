@@ -54,3 +54,9 @@ service mysql status > /var/cw/systeam/logs/mysql-status.txt
 
 #Redis Status
 service redis-server status > /var/cw/systeam/logs/redis-status.txt
+
+#APM PHP Slow Pages
+apm -s $1 php -l1h --page_durations --slow_pages --json > /var/cw/systeam/logs/apm-slow-php-pages.txt
+
+#APM Bots
+apm -s $1 traffic --bots -l1h --json > /var/cw/systeam/logs/apm-bots.txt
