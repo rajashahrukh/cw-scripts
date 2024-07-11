@@ -29,10 +29,10 @@ tail -100 /var/log/mysql/slow-query.log > /var/cw/systeam/logs/mysql-slow-query.
 top -b -n1 > /var/cw/systeam/logs/top-output.txt
 
 #PHPFPM logs
-cat /var/log/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log > /var/cw/systeam/logs/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.txt
+tail -100 /var/log/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log > /var/cw/systeam/logs/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.txt
 
 #APM Traffic output
-apm -s $1 traffic -l1h --json > /var/cw/systeam/logs/apm-traffic.txt
+apm -s $1 traffic -l1h --urls --ips --json > /var/cw/systeam/logs/apm-traffic.txt
 
 #APM MySQL output
 apm -s $1 mysql -l1h --json > /var/cw/systeam/logs/apm-mysql.txt
