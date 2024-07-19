@@ -41,19 +41,19 @@ apm -s $1 mysql -l1h --json > /var/cw/systeam/logs/apm-mysql.txt
 service elasticsearch status >> /var/cw/systeam/logs/service-statuses.txt
 
 #Nginx Status
-service nginx status > /var/cw/systeam/logs/service-statuses.txt
+service nginx status >> /var/cw/systeam/logs/service-statuses.txt
 
 #Apache Status
-service apache2 status > /var/cw/systeam/logs/service-statuses.txt
+service apache2 status >> /var/cw/systeam/logs/service-statuses.txt
 
 #Varnish Status
-service varnish status > /var/cw/systeam/logs/service-statuses.txt
+service varnish status >> /var/cw/systeam/logs/service-statuses.txt
 
 #MySQL Status
-service mysql status > /var/cw/systeam/logs/service-statuses.txt
+service mysql status >> /var/cw/systeam/logs/service-statuses.txt
 
 #Redis Status
-service redis-server status > /var/cw/systeam/logs/service-statuses.txt
+service redis-server status >> /var/cw/systeam/logs/service-statuses.txt
 
 #APM PHP Slow Pages
 apm -s $1 php -l1h --page_durations --slow_pages --json > /var/cw/systeam/logs/apm-slow-php-pages.txt
