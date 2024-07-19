@@ -2,10 +2,10 @@
 mkdir /var/cw/systeam/logs
 
 #Recent 100 lines of syslog
-cp /var/log/syslog > /var/cw/systeam/logs/syslog
+cp -r /var/log/syslog > /var/cw/systeam/logs/syslog
 
 #Recent 100 lines of Apache logs
-cp /home/master/applications/$1/logs/apache*.cloudwaysapps.com.access.log > /var/cw/systeam/logs/apache-$1.access.log
+cp -r /home/master/applications/$1/logs/apache*.cloudwaysapps.com.access.log > /var/cw/systeam/logs/apache-$1.access.log
 
 #df output
 df -h > /var/cw/systeam/logs/disk-usage.txt
@@ -17,19 +17,19 @@ df -i > /var/cw/systeam/logs/inodes-usage.txt
 du -hd3 /  --total --exclude='proc' --exclude='sys' --exclude='var/ossec' --exclude='usr/share' --exclude='boot' --exclude='dev' --exclude='run' --exclude='/var/spool' --exclude='etc' --exclude='bin' --exclude='usr/lib/locale' > /var/cw/systeam/logs/du-output.txt
 
 #Recent 100 lines of Nginx logs
-cp /home/master/applications/$1/logs/nginx*.cloudwaysapps.com.access.log > /var/cw/systeam/logs/nginx-$1.access.log
+cp -r /home/master/applications/$1/logs/nginx*.cloudwaysapps.com.access.log > /var/cw/systeam/logs/nginx-$1.access.log
 
 #Recent 100 lines of PHP Slow logs
-cp /home/master/applications/$1/logs/php-app.slow.log > /var/cw/systeam/logs/php-app.slow.log
+cp -r /home/master/applications/$1/logs/php-app.slow.log > /var/cw/systeam/logs/php-app.slow.log
 
 #MySQL Slow Logs
-cp /var/log/mysql/slow-query.log > /var/cw/systeam/logs/slow-query.log
+cp -r /var/log/mysql/slow-query.log > /var/cw/systeam/logs/slow-query.log
 
 #Processes
 top -b -n1 > /var/cw/systeam/logs/top-output.txt
 
 #PHPFPM logs
-cp /var/log/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log > /var/cw/systeam/logs/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log
+cp -r /var/log/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log > /var/cw/systeam/logs/php$(php -v | head -n 1 | cut -d " " -f2 | cut -d "." -f1,2)-fpm.log
 
 #APM Traffic output
 apm -s $1 traffic -l1h --urls --ips --json > /var/cw/systeam/logs/apm-traffic.txt
