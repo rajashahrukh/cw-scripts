@@ -32,7 +32,7 @@ fi
 
 echo -e "\n🔎 Verifying if Varnish is running..."
 
-precheck_status=$(curl -s -o /dev/null -w "%{http_code}" \
+precheck_status=$(curl -s -w "%{http_code}" \
   -X POST https://api.cloudways.com/api/v1/service/varnish \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
