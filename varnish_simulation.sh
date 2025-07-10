@@ -34,7 +34,7 @@ echo -e "\n✅ Access token retrieved."
 
 echo -e "\n🔎 Verifying if Varnish is running..."
 
-precheck_status=$(curl -s -w "HTTPSTATUS:%{http_code}" \
+precheck_status=$(curl -s -o /dev/null -w "HTTPSTATUS:%{http_code}" \
   -X POST https://api.cloudways.com/api/v1/service/varnish \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
