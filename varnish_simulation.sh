@@ -62,7 +62,7 @@ curl -s -X POST https://api.cloudways.com/api/v1/app/manage/varnish_setting \
   }"
 
 #  echo "⏳ Waiting 120 seconds before restarting the server..."
-  sleep 60
+  sleep 120
 
   # Step 2: Restart the server
   echo -e "🔄 Restarting server with ID: $SERVER_ID...\n"
