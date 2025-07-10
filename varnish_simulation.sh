@@ -30,11 +30,11 @@ if [ -z "$ACCESS_TOKEN" ]; then
   exit 1
 fi
 
-echo -e "✅ Access token retrieved.\n"
+echo -e "✅ Access token retrieved."
 
 # Function to manage varnish and restart service
 varnish() {
-  echo -e "📦 Adding exclusion rule to Varnish...\n"
+  echo -e "\n📦 Adding exclusion rule to Varnish..."
 
   VCL_LIST='[
     {
@@ -65,7 +65,7 @@ curl -s -X POST https://api.cloudways.com/api/v1/app/manage/varnish_setting \
   sleep 120
 
   # Step 2: Restart the server
-  echo -e "🔄 Restarting server with ID: $SERVER_ID...\n"
+  echo -e "\n🔄 Restarting server with ID: $SERVER_ID..."
   curl -s -X POST https://api.cloudways.com/api/v1/server/restart \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -75,7 +75,7 @@ curl -s -X POST https://api.cloudways.com/api/v1/app/manage/varnish_setting \
   sleep 120
 
   # Step 3: Disable Varnish service
-  echo -e "🚫 Disabling Varnish service...\n"
+  echo -e "\n🚫 Disabling Varnish service..."
   curl -s -X POST https://api.cloudways.com/api/v1/service/varnish \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -85,7 +85,7 @@ curl -s -X POST https://api.cloudways.com/api/v1/app/manage/varnish_setting \
   sleep 60
 
   # Step 4: Enable Varnish service
-  echo -e "✅ Enabling Varnish service...\n"
+  echo -e "\n✅ Enabling Varnish service..."
   ENABLE_RESPONSE=$(curl -s -X POST https://api.cloudways.com/api/v1/service/varnish \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
