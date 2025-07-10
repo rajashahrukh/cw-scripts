@@ -32,14 +32,17 @@ fi
 
 echo -e "\n🔎 Verifying if Varnish is running..."
 
-precheck_status=$(curl -s -w "%{http_code}" \
+precheck_status=$(curl -s -w "HTTPSTATUS:%{http_code}" \
   -X POST https://api.cloudways.com/api/v1/service/varnish \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -d "server_id=$SERVER_ID&action=enable")
 
-if [ "$precheck_status" -ne 200 ]; then
-  echo -e "\n❌ Varnish is already down with this error: $precheck_status"
+body=$(echo "$response" | sed -e 's/HTTPSTATUS\:.*//g')
+status=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+if [ "$status" -ne 200 ]; then
+  echo -e "\n❌ Varnish is already down with this error: $body"
   echo "Exiting script."
   exit 1
 fi
