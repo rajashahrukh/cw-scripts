@@ -41,7 +41,7 @@ precheck_status=$(curl -s -o /dev/null -w "%{http_code}" \
   -d "server_id=$SERVER_ID&action=enable")
 
 if [ "$precheck_status" -ne 200 ]; then
-  echo -e "\n❌ Varnish is down. Exiting...."
+  echo -e "\n❌ Varnish is down. Exiting..."
   exit 1
 fi
 
