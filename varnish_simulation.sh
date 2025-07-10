@@ -30,7 +30,21 @@ if [ -z "$ACCESS_TOKEN" ]; then
   exit 1
 fi
 
-echo -e "✅ Access token retrieved."
+echo -e "\n🔎 Verifying if Varnish is running..."
+
+precheck_status=$(curl -s -o /dev/null -w "%{http_code}" \
+  -X POST https://api.cloudways.com/api/v1/service/varnish \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d "server_id=$SERVER_ID&action=enable")
+
+if [ "$precheck_status" -ne 200 ]; then
+  echo -e "\n❌ Varnish is already down with this error: $precheck_status"
+  echo "Exiting script."
+  exit 1
+fi
+
+echo -e "\n✅ Access token retrieved."
 
 # Function to manage varnish and restart service
 varnish() {
