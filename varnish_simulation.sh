@@ -1,5 +1,32 @@
 #!/bin/bash
 
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+  echo ""
+  echo "📘 Cloudways Varnish Script Help"
+  echo "---------------------------------"
+  echo "This script performs the following actions:"
+  echo "1. Authenticates with the Cloudways API using email and API key."
+  echo "2. Simulate Varnish Fix Recipe:"
+  echo "   - Update Varnish exclusion settings"
+  echo "   - Restart the server"
+  echo "   - Disable and re-enable the Varnish service after intervals"
+  echo ""
+  echo "📌 Usage:"
+  echo "  ./script.sh <email> <api_key> <action> <server_id> <app_id>"
+  echo ""
+  echo "🔧 Parameters:"
+  echo "  email       - Your Cloudways account email"
+  echo "  api_key     - Your Cloudways API key"
+  echo "  action      - 'varnish' (only supported action currently)"
+  echo "  server_id   - The server ID in your Cloudways account"
+  echo "  app_id      - The application ID"
+  echo ""
+  echo "🧪 Example:"
+  echo "  ./script.sh user@example.com myapikey varnish srv123 app456"
+  echo ""
+  exit 0
+fi
+
 # Check if all 5 parameters are provided
 if [ "$#" -lt 5 ]; then
   echo "Usage: $0 <email> <api_key> <action> <server_id> <app_id>"
